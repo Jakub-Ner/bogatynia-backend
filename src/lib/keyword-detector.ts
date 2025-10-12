@@ -1,9 +1,20 @@
 import ogloszeniaHandler  from './handlers/ogloszeniaHandler';
 
+interface EmailAttachment {
+  ContentType: string;
+  Content: string;
+  Name?: string;
+}
+
+interface EmailData {
+  From?: string;
+  Subject?: string;
+  Attachments?: EmailAttachment[];
+}
 
 export interface KeywordAction {
   keyword: string;
-  action: (emailData: any) => void;
+  action: (emailData: EmailData) => void;
 }
 
 
@@ -28,7 +39,7 @@ export function detectKeywords(subject: string): KeywordAction[] {
   return foundActions;
 }
 
-export function executeKeywordActions(emailData: any, actions: KeywordAction[]): void {
+export function executeKeywordActions(emailData: EmailData, actions: KeywordAction[]): void {
   actions.forEach(({ keyword, action }) => {
     console.log(`Executing action for keyword: ${keyword}`);
     action(emailData);

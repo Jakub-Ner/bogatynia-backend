@@ -1,14 +1,27 @@
 import { isTrustedEmail, validateEmailData } from './email-validator';
 import { detectKeywords, executeKeywordActions } from './keyword-detector';
 
-export async function processIncomingEmail(emailData: any): Promise<void> {
+interface EmailAttachment {
+  ContentType: string;
+  Content: string;
+  Name?: string;
+}
+
+interface EmailData {
+  From?: string;
+  Subject?: string;
+  Attachments?: EmailAttachment[];
+}
+
+export async function processIncomingEmail(emailData: unknown): Promise<void> {
   if (!validateEmailData(emailData)) {
     console.log('Invalid email data received');
     return;
   }
 
-  const fromEmail = emailData.From;
-  const subject = emailData.Subject;
+  const typedEmailData = emailData as EmailData;
+  const fromEmail = typedEmailData.From || '';
+  const subject = typedEmailData.Subject || '';
 
   console.log(`Processing email from: ${fromEmail}, subject: ${subject}`);
 
@@ -26,5 +39,5 @@ export async function processIncomingEmail(emailData: any): Promise<void> {
     return;
   }
 
-  executeKeywordActions(emailData, keywordActions);
+  executeKeywordActions(typedEmailData, keywordActions);
 }

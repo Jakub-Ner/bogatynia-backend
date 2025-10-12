@@ -9,7 +9,19 @@ const MS_WORD_CONTENT_TYPE = "application/msword";
 const DOCX_CONTENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
 const ENCODING_BASE64 = "base64";
 
-function findWordDocument(attachments: any[]): any | null {
+interface EmailAttachment {
+  ContentType: string;
+  Content: string;
+  Name?: string;
+}
+
+interface EmailData {
+  From?: string;
+  Subject?: string;
+  Attachments?: EmailAttachment[];
+}
+
+function findWordDocument(attachments: EmailAttachment[]): EmailAttachment | null {
   return (
     attachments.find(
       (attachment) =>
@@ -27,7 +39,7 @@ function convertPlainTextToMarkdown(text: string): string {
     .join("\n\n");
 }
 
-async function extractTextFromWordDocument(attachment: any): Promise<string> {
+async function extractTextFromWordDocument(attachment: EmailAttachment): Promise<string> {
   const content = attachment.Content;
   const buffer = Buffer.from(content, ENCODING_BASE64);
 
@@ -39,14 +51,6 @@ async function extractTextFromWordDocument(attachment: any): Promise<string> {
     console.error("Error extracting text from Word document:", error);
     throw error;
   }
-}
-
-async function saveMarkdownToFile(
-  markdown: string,
-  filename: string,
-): Promise<void> {
-  const fs = await import("fs/promises");
-  await fs.writeFile(filename, markdown, "utf-8");
 }
 
 function parseMetadata(date: string): string {
@@ -61,7 +65,7 @@ draft: false
 }
 
 export default async function ogloszeniaHandler(
-  emailData: any,
+  emailData: EmailData,
 ): Promise<void> {
   const attachments = emailData.Attachments || [];
 
@@ -75,7 +79,7 @@ export default async function ogloszeniaHandler(
   const rawText = await extractTextFromWordDocument(wordDocument);
 
   let formattedMarkdown = await formatOgloszeniaWithAI(rawText);
-  const ogloszeniaDate = await extractDateFromSubject(emailData);
+  const ogloszeniaDate = await extractDateFromSubject(emailData.Subject || '');
   formattedMarkdown = parseMetadata(ogloszeniaDate) + formattedMarkdown;
 
   const title = `ogloszenia/${ogloszeniaDate}.md`;

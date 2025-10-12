@@ -10,8 +10,11 @@ export function isTrustedEmail(fromEmail: string): boolean {
   );
 }
 
-export function validateEmailData(emailData: any): boolean {
-  return emailData &&
+export function validateEmailData(emailData: unknown): boolean {
+  return !!(emailData &&
+         typeof emailData === 'object' &&
+         'From' in emailData &&
+         'Subject' in emailData &&
          emailData.From &&
-         emailData.Subject;
+         emailData.Subject);
 }
