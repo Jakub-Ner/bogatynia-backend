@@ -21,7 +21,7 @@ export interface KeywordAction {
 export const EMAIL_KEYWORDS: KeywordAction[] = [
   {
     keyword: 'ogłoszenia',
-    action: (emailData) => {
+    action: async (emailData) => {
         ogloszeniaHandler(emailData);
     }
   }
