@@ -36,8 +36,7 @@ const getClosestSunday = () => {
 
 const dateExtractionSchema = z.object({
   date: z
-    .string()
-    .datetime()
+    .iso.date()
     .nullable()
     .describe(
       "The extracted date in ISO 8601 format (YYYY-MM-DD), or null if no date is found in the subject",
@@ -45,37 +44,47 @@ const dateExtractionSchema = z.object({
 });
 
 export async function extractDateFromSubject(subject: string): Promise<string> {
+  console.log("Extracting date from subject:", subject);
   try {
     const { object } = await generateObject({
       model: getModel(),
       schema: dateExtractionSchema,
-      prompt: `Extract the date from the following email subject. If there's a date mentioned (in any format), convert it to ISO 8601 format (YYYY-MM-DD). If no date is found, return null.
-
+      prompt: `Extract the date from the email subject. If the date (formatted as DD.MM.YYYY, with Roman numerals permitted for the month) is found, convert it to ISO 8601 (YYYY-MM-DD); otherwise, return null.
 Subject: ${subject}`,
     });
 
     if (object.date) {
-      return object.date.split("T")[0];
+      const date = object.date.toString();
+      console.log("Extracted date:", date);
+      return date;
     }
   } catch (error) {
     console.error("Error extracting date from subject:", error);
   }
 
-  return getClosestSunday();
+  const date = getClosestSunday();
+  console.log("No date found, defaulting to closest Sunday:", date);
+  return date;
 }
 
 async function generate_response(prompt: string): Promise<string> {
-  const { text } = await generateText({
-    model: getModel(),
-    prompt: prompt,
-    system: "Jesteś konwerterem tekstu na markdown. Zwracasz jedynie markdown zgodnie z instrukcjami, bez żadnych dodatkowych komentarzy ani wyjaśnień.",
-  });
-
-  return text;
+  console.log("Generating response");
+  try {
+    const { text } = await generateText({
+      model: getModel(),
+      prompt: prompt,
+      system:
+        "Jesteś konwerterem tekstu na markdown. Zwracasz jedynie markdown zgodnie z instrukcjami, bez żadnych dodatkowych komentarzy ani wyjaśnień.",
+    });
+    return text;
+  } catch (error) {
+    console.error("Error generating response:", error);
+    throw error;
+  }
 }
+
 export async function formatOgloszeniaWithAI(rawText: string): Promise<string> {
   const prompt = OGLOSZENIA_FORMATTING_PROMPT.replace("{document}", rawText);
   const response = await generate_response(prompt);
   return response.replace(/```/g, "").trim();
 }
-
