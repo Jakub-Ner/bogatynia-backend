@@ -22,7 +22,7 @@ export const EMAIL_KEYWORDS: KeywordAction[] = [
   {
     keyword: 'ogłoszenia',
     action: async (emailData) => {
-        ogloszeniaHandler(emailData);
+        await ogloszeniaHandler(emailData);
     }
   }
 ];
