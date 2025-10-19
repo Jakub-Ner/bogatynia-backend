@@ -39,5 +39,5 @@ export async function processIncomingEmail(emailData: unknown): Promise<void> {
     return;
   }
 
-  executeKeywordActions(typedEmailData, keywordActions);
+  await executeKeywordActions(typedEmailData, keywordActions);
 }

@@ -14,7 +14,7 @@ interface EmailData {
 
 export interface KeywordAction {
   keyword: string;
-  action: (emailData: EmailData) => void;
+  action: (emailData: EmailData) => Promise<void>;
 }
 
 
@@ -39,9 +39,9 @@ export function detectKeywords(subject: string): KeywordAction[] {
   return foundActions;
 }
 
-export function executeKeywordActions(emailData: EmailData, actions: KeywordAction[]): void {
-  actions.forEach(({ keyword, action }) => {
+export async function executeKeywordActions(emailData: EmailData, actions: KeywordAction[]): Promise<void> {
+  for (const { keyword, action } of actions) {
     console.log(`Executing action for keyword: ${keyword}`);
-    action(emailData);
-  });
+    await action(emailData);
+  }
 }

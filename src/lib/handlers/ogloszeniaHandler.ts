@@ -46,7 +46,6 @@ async function extractTextFromWordDocument(attachment: EmailAttachment): Promise
   console.log("Buffer length:", buffer.length);
   try {
     const result = await mammoth.convertToHtml({ buffer });
-    console.log("Extracted text length:", result.value.length);
     return convertPlainTextToMarkdown(result.value);
   } catch (error) {
     console.error("Error extracting text from Word document:", error);
