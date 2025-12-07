@@ -1,6 +1,7 @@
-import { generateText, generateObject } from "ai";
-import { z } from "zod";
+import { generateObject } from "ai";
+import { generate_response } from "./utils";
 import { getModel } from "./models";
+import z from "zod";
 
 const OGLOSZENIA_FORMATTING_PROMPT = `Jesteś narzędziem do formatowania dokumentów. Twoim zadaniem jest sformatowanie tekstu polskich ogłoszeń parafialnych w czysty, dobrze ustrukturyzowany Markdown.
 
@@ -20,28 +21,12 @@ UWAGA:
 </document do sformatowania>
 `;
 
-const getClosestSunday = () => {
-  const today = new Date();
-  const dayOfWeek = today.getDay();
-  let daysUntilClosestSunday = -dayOfWeek;
 
-  if (dayOfWeek > 3) {
-    daysUntilClosestSunday += 7;
-  }
-
-  today.setDate(today.getDate() + daysUntilClosestSunday);
-
-  return today.toISOString().split("T")[0];
-};
-
-const dateExtractionSchema = z.object({
-  date: z
-    .iso.date()
-    .nullable()
-    .describe(
-      "The extracted date in ISO 8601 format (YYYY-MM-DD), or null if no date is found in the subject",
-    ),
-});
+export async function formatAnnouncementsWithAI(rawText: string): Promise<string> {
+  const prompt = OGLOSZENIA_FORMATTING_PROMPT.replace("{document}", rawText);
+  const response = await generate_response(prompt);
+  return response.replace(/```/g, "").trim();
+}
 
 export async function extractDateFromSubject(subject: string): Promise<string> {
   console.log("Extracting date from subject:", subject);
@@ -67,24 +52,25 @@ Subject: ${subject}`,
   return date;
 }
 
-async function generate_response(prompt: string): Promise<string> {
-  console.log("Generating response");
-  try {
-    const { text } = await generateText({
-      model: getModel(),
-      prompt: prompt,
-      system:
-        "Jesteś konwerterem tekstu na markdown. Zwracasz jedynie markdown zgodnie z instrukcjami, bez żadnych dodatkowych komentarzy ani wyjaśnień.",
-    });
-    return text;
-  } catch (error) {
-    console.error("Error generating response:", error);
-    throw error;
-  }
-}
+const getClosestSunday = () => {
+  const today = new Date();
+  const dayOfWeek = today.getDay();
+  let daysUntilClosestSunday = -dayOfWeek;
 
-export async function formatOgloszeniaWithAI(rawText: string): Promise<string> {
-  const prompt = OGLOSZENIA_FORMATTING_PROMPT.replace("{document}", rawText);
-  const response = await generate_response(prompt);
-  return response.replace(/```/g, "").trim();
-}
+  if (dayOfWeek > 3) {
+    daysUntilClosestSunday += 7;
+  }
+
+  today.setDate(today.getDate() + daysUntilClosestSunday);
+
+  return today.toISOString().split("T")[0];
+};
+
+const dateExtractionSchema = z.object({
+  date: z
+    .iso.date()
+    .nullable()
+    .describe(
+      "The extracted date in ISO 8601 format (YYYY-MM-DD), or null if no date is found in the subject",
+    ),
+});

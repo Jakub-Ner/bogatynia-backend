@@ -20,7 +20,8 @@ export interface KeywordAction {
 
 export const EMAIL_KEYWORDS: KeywordAction[] = [
   {
-    keyword: 'ogłoszenia',
+    // default handler
+    keyword: '',
     action: async (emailData) => {
         await ogloszeniaHandler(emailData);
     }
