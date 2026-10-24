@@ -31,11 +31,16 @@ export async function formatAnnouncementsWithAI(rawText: string): Promise<string
 export async function extractDateFromSubject(subject: string): Promise<string> {
   console.log("Extracting date from subject:", subject);
   try {
+    const today = new Date().toISOString().split("T")[0]; // YYYY-MM-DD
     const { object } = await generateObject({
       model: getModel(),
       schema: dateExtractionSchema,
       prompt: `Extract the date from the email subject. If the date (formatted as DD.MM.YYYY, with Roman numerals permitted for the month) is found, convert it to ISO 8601 (YYYY-MM-DD); otherwise, return null.
-Subject: ${subject}`,
+    Use the current date as a reference example:
+    - Today is: ${today}
+    - Example: if the subject contains "15.03.2024" → return "2024-03-15"
+    - Example: if the subject contains "15.III.2024" → return "2024-03-15"
+    Subject: ${subject}`,
     });
 
     if (object.date) {
@@ -74,3 +79,4 @@ const dateExtractionSchema = z.object({
       "The extracted date in ISO 8601 format (YYYY-MM-DD), or null if no date is found in the subject",
     ),
 });
+

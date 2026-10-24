@@ -2,7 +2,7 @@ import { createAzure } from "@ai-sdk/azure";
 
 const AZURE_BASE_URL = process.env.AZURE_BASE_URL;
 const AZURE_API_KEY = process.env.AZURE_API_KEY;
-const AZURE_DEPLOYMENT_NAME = process.env.AZURE_DEPLOYMENT_NAME || "gpt-4o";
+const AZURE_DEPLOYMENT_NAME = process.env.AZURE_DEPLOYMENT_NAME || "gpt-6-luna";
 
 export function getModel() {
   if (!AZURE_BASE_URL || !AZURE_API_KEY) {
