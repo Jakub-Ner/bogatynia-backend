@@ -9,6 +9,7 @@ Instrukcje:
 4. Nie dodawaj żadnych wyjaśnień ani komentarzy - zwróć jedynie markdown
 5. Nie dodawaj metadanych.
 6. Dla tytułu użyj nagłówka H3
+7. Datę powinna być w formacie **DD.MM** np. **3.11**, a dzień tygodnia powinien być podany w pełnej formie np. poniedziałek
 
 <przykład sformatowanego dokumentu>
 ### Porządek Modlitw za Zmarłych – „Wypominki” – w Parafii Św. Marii Magdaleny 
