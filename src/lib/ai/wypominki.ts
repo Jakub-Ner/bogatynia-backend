@@ -12,7 +12,7 @@ Instrukcje:
 7. Datę powinna być w formacie **DD.MM** np. **3.11**, a dzień tygodnia powinien być podany w pełnej formie np. poniedziałek
 
 <przykład sformatowanego dokumentu>
-### Porządek Modlitw za Zmarłych – „Wypominki” – w Parafii Św. Marii Magdaleny 
+### Modlitwy za Zmarłych – „Wypominki” 2026
 
 
 | Data | Dzień tygodnia | Godzina | Ulice / Grupa, za którą są modlitwy |
