@@ -1,4 +1,4 @@
-import ogloszeniaHandler  from './handlers/ogloszeniaHandler';
+import userMailHandler from './handlers/userMailHandler';
 
 interface EmailAttachment {
   ContentType: string;
@@ -23,7 +23,7 @@ export const EMAIL_KEYWORDS: KeywordAction[] = [
     // default handler
     keyword: '',
     action: async (emailData) => {
-        await ogloszeniaHandler(emailData);
+      await userMailHandler(emailData);
     }
   }
 ];
