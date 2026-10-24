@@ -10,6 +10,7 @@ Instrukcje:
 5. Nie dodawaj metadanych.
 6. Dla tytułu użyj nagłówka H3
 7. Datę powinna być w formacie **DD.MM** np. **3.11**, a dzień tygodnia powinien być podany w pełnej formie np. poniedziałek
+8. Nie wspominaj ktorej parafii dotyczy dokument (to trafia na stronę jednej konkretnej parafii).
 
 <przykład sformatowanego dokumentu>
 ### Modlitwy za Zmarłych – „Wypominki” 2026
